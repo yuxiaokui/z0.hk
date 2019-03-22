@@ -1,3 +1,5 @@
+
+
 <html>
 <head>
 <title>
@@ -9,10 +11,19 @@ Xi4okv Blog
 <body>
 <div id="app">
 Xi4okv Blog
+<br>
 <button  @click="view">博客列表</button>
 <br>
 
-{{ result }}
+<li v-for="res in result">
+{{ JSON.parse(res).title }}
+<br>
+{{ JSON.parse(res).time }}
+<br>
+{{ JSON.parse(res).content }}
+<br>
+<p>
+</li>
 
 </div>
 
@@ -30,7 +41,7 @@ var app = new Vue({
             type : "get",
             url : xkServer,
             success: function (response) {
-                app.result = response
+                app.result = response.replace(new RegExp('}{', 'g'),'}==={').split('===')
             }
         })
       }
