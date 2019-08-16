@@ -1,8 +1,90 @@
+
+
 <html>
 <head>
-<title>Xi4okv Blog</title>
+  <meta charset="UTF-8">
+<title>
+Xi4okv 扫描器
+</title>
 </head>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="http://code.jquery.com/jquery-2.0.0.min.js"></script>
 <body>
-<a href="./fuckdomain.html">在线子域名FUZZ</a>
-</body>
-</html>
+<div id="app">
+ip：<input type="text" v-model="text">
+<button @click="send()">扫描</button>
+<br>
+<button @click="closeWebSocket()">关闭websocket连接</button>
+<br>
+<div>{{data}}</div>
+##################################
+<div v-html="result"><div>
+</div>
+
+<script>
+
+var app = new Vue({
+  el: '#app',
+  data: {
+      text: 'baidu.com',
+      data: '',
+      result: '',
+      websocket: null
+  },
+  mounted() {
+    if ('WebSocket' in window) {
+      this.websocket = new WebSocket('ws://ws_scanner.daocloudapp.com/hackit')
+      this.initWebSocket()
+    } else {
+      alert('当前浏览器 Not support websocket')
+    }
+  },
+  beforeDestroy() {
+    this.onbeforeunload()
+  },
+  methods: {
+    initWebSocket() {
+      //连接错误
+      this.websocket.onerror = this.setErrorMessage
+
+      // //连接成功
+      this.websocket.onopen = this.setOnopenMessage
+
+      //收到消息的回调
+      this.websocket.onmessage = this.setOnmessageMessage
+
+      //连接关闭的回调
+      this.websocket.onclose = this.setOncloseMessage
+
+      //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+      window.onbeforeunload = this.onbeforeunload
+    },
+    setErrorMessage() {
+      this.data = "WebSocket连接发生错误" + '   状态码：' + this.websocket.readyState;
+    },
+    setOnopenMessage() {
+      this.data = "WebSocket连接成功" + '   状态码：' + this.websocket.readyState;
+    },
+    setOnmessageMessage(event) {
+      this.result += event.data;
+      this.result += "<br>";
+    },
+    setOncloseMessage() {
+      this.data = "WebSocket连接关闭" + '   状态码：' + this.websocket.readyState;
+    },
+    onbeforeunload() {
+      this.closeWebSocket();
+    },
+
+    //websocket发送消息
+    send() {
+      this.websocket.send(this.text)
+      this.text = 'baidu.com'
+    },
+    closeWebSocket() {
+      this.websocket.close()
+    }
+  }
+})
+
+</script>
