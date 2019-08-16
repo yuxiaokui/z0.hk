@@ -8,7 +8,7 @@ Xi4okv 扫描器
 </title>
 </head>
 <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-<script src="http://code.jquery.com/jquery-2.0.0.min.js"></script>
+<script src="https://code.jquery.com/jquery-2.0.0.min.js"></script>
 <body>
 <div id="app">
 ip：<input type="text" v-model="text">
@@ -33,7 +33,7 @@ var app = new Vue({
   },
   mounted() {
     if ('WebSocket' in window) {
-      this.websocket = new WebSocket('ws://ws_scanner.daocloudapp.com/hackit')
+      this.websocket = new WebSocket('wss://home.z0.hk:3000/hackit')
       this.initWebSocket()
     } else {
       alert('当前浏览器 Not support websocket')
