@@ -1,0 +1,64 @@
+    <section class="download">
+            <a class="link" href="javascript:void(0)" id="downloadButton3"  href="#">免费下载 樱桃视频APP</a>
+        </section>
+<script>var appType = "yingtao";var edcode="app_loaded";</script>
+<script src="https://www.zqscript.com/js/floatapped.js"></script>
+<script type="text/javascript" charset="utf-8" src="https://res.cdn.openinstall.io/openinstall.js"></script>
+<script>
+    $(function(){
+        $('#broadcaster').broadCaster();
+        $('#broadcaster_m').broadCaster({broadPause:false});
+        $('.qrcode_m').tap(function(){
+                $('.cover,.qrcode.alert').css({'display':'block'});
+            
+        })
+        $('.close,.cover').click(function(){
+            $('.cover,.qrcode.alert').css({'display':'none'});
+        }) 
+    })
+    var shine=new blossom("cav");
+    var qrcode = new QRCode(document.getElementById("qrcode"), {
+        text:  window.location.href,
+        width: document.body.clientWidth*0.5,
+        height: document.body.clientWidth*0.5,
+        // colorDark : "#000000",
+        // colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+    });
+    var qrcode_m = new QRCode(document.getElementById("qrcode_m"), {
+        text:  window.location.href,
+        width: document.body.clientWidth*0.5,
+        height: document.body.clientWidth*0.5,
+        correctLevel : QRCode.CorrectLevel.H
+    });
+    var data = OpenInstall.parseUrlParams(); //openinstall.js中提供的工具函数，解析url中的所有查询参数
+    new OpenInstall({
+        /*appKey必选参数，openinstall平台为每个应用分配的ID*/
+        appKey: "t4yxmf",
+        preferWakeup:true,
+        onready: function () {
+            var m = this,
+                button = document.getElementById("downloadButton"),
+                button2 = document.getElementById("downloadButton2"),
+                button3 = document.getElementById("downloadButton3");
+
+            button.style.visibility = "visible";
+
+            /*在app已安装的情况尝试拉起app*/
+            m.schemeWakeup();
+            /*用户点击某个按钮时(假定按钮id为downloadButton)，安装app*/
+            button.onclick = function () {
+                m.wakeupOrInstall();
+                return false;
+            }
+            button2.onclick = function () {
+                m.wakeupOrInstall();
+                return false;
+            }
+            button3.onclick = function () {
+                m.wakeupOrInstall();
+                return false;
+            }
+        }
+    }, data);
+</script>
