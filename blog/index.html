@@ -80,8 +80,9 @@ var app = new Vue({
       if (data.message != "")
       {
         if (this.history != data.message)
-        {
-          this.result += data.message
+        { var temp
+          temp = data.message.replace("<", "&lt;"))
+          this.result += temp
           this.result += "<br>#########################################<br>";
         }
         this.history = data.message
