@@ -11,7 +11,7 @@
 <div id="app" style="float:left;width:40%">
 大侠贵姓：<input type="text" v-model="name"><br>
 大侠请留言：<input type="text" v-model="text">
-<button @click="send()">发送</button>
+<button @click="send()" @keyup.enter.native="send()">发送</button>
 <br>
 <br>
 <div v-html="data"></div>
