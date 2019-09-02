@@ -1,38 +1,48 @@
-
-
 <html>
 <head>
   <meta charset="UTF-8">
-<title>
-AI SEC 问答机器人
-</title>
+<title>菊花聊天室</title>
 </head>
 <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 <script src="https://code.jquery.com/jquery-2.0.0.min.js"></script>
 <body>
-<div id="app">
-Input：<input type="text" v-model="text">
-<button @click="send()">提问</button>
+
+
+<div id="app" style="float:left;width:40%">
+大侠贵姓：<input type="text" v-model="name"><br>
+大侠请留言：<input type="text" v-model="text">
+<button @click="send()">发送</button>
 <br>
 <br>
 <div v-html="data"></div>
+当前在线人数：{{online_num}}
+<br>
 ##################################
 <div v-html="result"></div>
 </div>
 
-<script>
 
+<script>
 var app = new Vue({
   el: '#app',
   data: {
-      text: '如何测试xss漏洞？',
+      name: '',
+      text: '',
       data: '',
+      online_num: 0,
       result: '',
-      websocket: null
+      websocket: null,
+      history: ''
   },
   mounted() {
+
+    var string = "段誉,虚竹,阿紫,乔峰,阿朱,慕容复,王语嫣,段正淳,木婉清,鸠摩智,游坦之,丁春秋,钟灵,包不同,马夫人,乌老大,阿碧,段延庆,玄难,玄慈,风波恶,钟万仇,耶律洪基,云中鹤,巴天石,叶二娘,苏星河,李秋水,全冠清";
+    var array = string.split(",");
+    this.name = array[Math.round(Math.random()*(array.length-1))];
+
+
     if ('WebSocket' in window) {
-      this.websocket = new WebSocket('wss://home.z0.hk:3000/hackit')
+      this.websocket = new WebSocket('wss://home.z0.hk:3000/chat')
       this.initWebSocket()
     } else {
       alert('当前浏览器 Not support websocket')
@@ -59,17 +69,26 @@ var app = new Vue({
       window.onbeforeunload = this.onbeforeunload
     },
     setErrorMessage() {
-      this.data = "机器人连接发生错误" + '   状态码：' + this.websocket.readyState;
+      this.data = "聊天室连接发生错误" + '   状态码：' + this.websocket.readyState;
     },
     setOnopenMessage() {
-      this.data = "机器人连接成功" + '   状态码：' + this.websocket.readyState;
+      this.data = "聊天室连接成功" + '   状态码：' + this.websocket.readyState;
     },
     setOnmessageMessage(event) {
-      this.result += event.data;
-      this.result += "<br>";
+      data = JSON.parse(event.data);
+      this.online_num = data.online_num
+      if (data.message != "")
+      {
+        if (this.history != data.message)
+        {
+          this.result += data.message
+          this.result += "<br>#########################################<br>";
+        }
+        this.history = data.message
+      }
     },
     setOncloseMessage() {
-      this.data = "机器人连接关闭" + '   状态码：' + this.websocket.readyState;
+      this.data = "聊天室连接关闭" + '   状态码：' + this.websocket.readyState;
     },
     onbeforeunload() {
       this.closeWebSocket();
@@ -77,8 +96,13 @@ var app = new Vue({
 
     //websocket发送消息
     send() {
-      this.websocket.send(this.text)
-      this.text = ''
+      if(this.text == ''){
+        alert('说点啥吧！')
+      }
+      else{
+        this.websocket.send(this.name + ":" + this.text)
+        this.text = ''
+      }
     },
     closeWebSocket() {
       this.websocket.close()
