@@ -12,6 +12,7 @@
 大侠贵姓：<input type="text" v-model="name"><br>
 大侠请留言：<input type="text" v-model="text" @keyup.enter="send()">
 <button @click="send()">发送</button>
+<button @click="clear()">清空缓存</button>
 <br>
 <br>
 <div v-html="data"></div>
@@ -104,6 +105,9 @@ var app = new Vue({
         this.websocket.send(this.name + ":" + this.text)
         this.text = ''
       }
+    },
+    clear() {
+        this.result = ''
     },
     closeWebSocket() {
       this.websocket.close()
