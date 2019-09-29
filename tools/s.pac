@@ -1,5 +1,6 @@
 var domains = {
   "facebook.com":1,
+  "github.com":1,
   "twimg.com":1,
   "hackerone.com":1,
   "google.com": 1, 
