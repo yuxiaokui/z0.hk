@@ -5,7 +5,8 @@ var domains = {
   "t.co":1,
   "hackerone.com":1,
   "google.com": 1, 
-  "twitter.com": 1
+  "twitter.com": 1,
+  "googleapis.com": 1
 };
 
 var proxy = "SOCKS5 home.z0.hk:28080;DIRECT;";
