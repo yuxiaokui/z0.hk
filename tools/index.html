@@ -1,0 +1,145 @@
+<html>
+<head>
+    <title>黑客在线小工具</title>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<h2>纯JS开发，请配置好浏览器代理再进行使用。</h2>
+
+端口扫描器:
+<form>
+    IP:<input type="text" name="ip" value="127.0.0.1"/><br/>
+    Port:<input type="text" name="port" style="width:500px" value="80,81,443,1433,3306,3389,7001,8000,8080,9200,11211"/><br/>
+    Timeout:<input type="text" name="timeout" value="1000"/><br/>
+    <label for="Result">Result:</label><br/>
+    <textarea id="result" name="result" rows="7" cols="50"></textarea><br/>
+    <input class="button" type="button" value="scan" onClick="javascript:scan(this.form)"/>
+</form>
+
+<script>
+    function scan(form){
+        var result = document.getElementById("result");
+        result.value = '';
+        ip = form.ip.value;
+        timeout = form.timeout.value;
+        port_list = form.port.value.split(",");
+        for(var i=0;i<port_list.length;i++){
+            portscan(callback,ip,port_list[i],timeout);
+        }
+    }
+    
+    function portscan(callback,ip,port,timeout){
+        var img = new Image();
+        img.onerror = function () {
+                if (!img) {
+                    return;
+                }
+                img = undefined;
+                callback(ip,port,'open');
+            };
+            
+        img.onload = img.onerror;
+
+        img.src = 'http://' + ip + ':' + port;
+
+        setTimeout(function () {
+                if (!img) {
+                    return;
+                }
+                img = undefined;
+                //callback(ip,port,'close');
+            }, timeout);
+
+    }
+
+    function callback(ip,port,status){
+        var result = document.getElementById("result");
+        result.value +=  ip + ':' + port + ' ===> ' + status+"\n";
+    }
+</script>
+
+目录扫描器: （由于受到CORS影响，此功能废弃。）
+<form>
+    URL:<input type="text" name="url" value="https://z0.hk"/><br/>
+    <label for="Result">Result:</label><br/>
+    <textarea id="result2" name="result" rows="7" cols="50"></textarea><br/>
+    <input class="button" type="button" value="scan" onClick="javascript:scandir(this.form)"/>
+</form>
+
+<script>
+
+var dirlist = ['/robots.txt','/phpinfo.php','/1.txt']
+
+function scandir(form){
+    var result = document.getElementById("result2");
+    result.value = '';
+    url = form.url.value;
+  
+    for(var i=0;i<dirlist.length;i++){
+        dirscan(url,dirlist[i]);
+    }
+}
+
+function dirscan(url,path){
+        var url = url + path;
+        fetch(url,{
+            method: 'GET',
+            mode: 'cors',
+        }).then(res => {
+            callback2(url,res.status);
+        })
+    }
+
+
+function callback2(url,status){
+        var result = document.getElementById("result2");
+        result.value +=  url + '===>' + status+"\n";
+    }
+</script>
+
+
+子域名扫描器:
+<form>
+    Domain:<input type="text" name="domain" value="baidu.com"/><br/>
+    <label for="Result">Result:</label><br/>
+    <textarea id="result3" name="result" rows="7" cols="50"></textarea><br/>
+    <input class="button" type="button" value="scan" onClick="javascript:scandns(this.form)"/>
+</form>
+
+<script>
+
+var dnslist = ['www','bbs','123']
+
+function scandns(form){
+    var result = document.getElementById("result2");
+    result.value = '';
+    domain = form.domain.value;
+  
+    for(var i=0;i<dnslist.length;i++){
+        dirscan(domain,dnslist[i]);
+    }
+}
+
+function dirscan(domain,dns){
+        var url = "https://phpinfo.me/domain/?domain=" + domain +"&q=" + dns ;
+
+        $.ajax({  
+        type : "get",  
+        async: false,  
+        url : url,  
+        dataType : "jsonp",
+        success : function(data){  
+            console.log(data.result)  
+        }, 
+    });       
+
+    
+    }
+
+
+function callback3(url,status){
+        var result = document.getElementById("result3");
+        result.value +=  url + '===>' + status+"\n";
+    }
+</script>
+
+</html>
